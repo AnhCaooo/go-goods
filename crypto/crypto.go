@@ -8,15 +8,19 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/AnhCaooo/go-goods/helpers"
 )
 
 // Read encryption key from config folder
+// also having the trim empty space for key to ensure key are correct format
 func ReadEncryptionKey(keyFilePath string) ([]byte, error) {
 	key, err := os.ReadFile(keyFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read key file: %s", err.Error())
 	}
-	return key, nil
+
+	return helpers.TrimSpaceForByte(key), nil
 }
 
 // Receives 2 paths (inputFile, outputFile) which are non-encrypted config file and encrypted config file.
