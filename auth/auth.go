@@ -7,10 +7,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// receive token and JWT secret key to do verify the token
+// receive token and JWT secret key as string to do verify the token
 func VerifyToken(tokenString, secretKey string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		return []byte(secretKey), nil
 	})
 
 	if err != nil {
