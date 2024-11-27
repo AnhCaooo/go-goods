@@ -17,7 +17,6 @@ func EncodeResponse[T any](w http.ResponseWriter, status int, v T) error {
 	return nil
 }
 
-// TODO: add unit test
 // decode the request bodies
 func DecodeRequest[T any](r *http.Request) (v T, err error) {
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
@@ -26,8 +25,7 @@ func DecodeRequest[T any](r *http.Request) (v T, err error) {
 	return v, nil
 }
 
-// TODO: add unit test
-// decode the response bodies
+// DecodeResponse receives `v` as value then decode, finally returns as response body
 func DecodeResponse[T any](r *http.Response) (v T, err error) {
 	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
 		return v, fmt.Errorf("decode json: %w", err)

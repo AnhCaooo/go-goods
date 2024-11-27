@@ -50,3 +50,10 @@ func TestEncodeResponse(t *testing.T) {
 		t.Errorf("Expected data %v in response body, got %v", testData, decodedData)
 	}
 }
+
+// TODO
+func TestDecodeRequest(t *testing.T) {
+}
+
+func TestDecodeResponse(t *testing.T) {
+}
