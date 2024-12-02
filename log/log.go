@@ -9,14 +9,14 @@ import (
 )
 
 /*
-initialize and return logger instance (unstructured log)
+initialize and return logger instance (unstructured log). After initialization, use logger as dependency injection
 
 *Note*: it is recommended to buffered log entries are flushed before the program exits.
 
 Example usage:
 
-	Logger := log.InitLogger(zapcore.InfoLevel)
-	defer Logger.Sync()
+	logger := log.InitLogger(zapcore.InfoLevel)
+	defer logger.Sync()
 */
 func InitLogger(level zapcore.Level) *zap.Logger {
 	// todo: do we want to store the log in specific file for investigation purposes?
