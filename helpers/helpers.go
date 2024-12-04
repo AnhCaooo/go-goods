@@ -15,6 +15,8 @@ func GetCurrentDir() (dir string, err error) {
 	return
 }
 
+// TrimSpaceForByte parses byte slice to string, then trims all empty space and returns as byte slice.
+// This ensures that given text is consistent
 func TrimSpaceForByte(value []byte) []byte {
 	// convert to string
 	strVal := string(value)
