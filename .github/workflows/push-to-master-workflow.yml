@@ -1,0 +1,21 @@
+# AnhCao 2024
+
+name: Push to master branch workflow
+
+on:
+  push:
+    branches: 
+      - master
+  
+jobs:
+  build:
+    name: build, tag and push Docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+
+# Increase patch version in tag
+# Write changelog
