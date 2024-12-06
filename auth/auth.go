@@ -24,19 +24,62 @@ import (
 //   - secretKey: The SECRET KEY used to verify the token's signature.
 //
 // RETURNS:
+//   - token: the JWT token that can be verified and used for authorization purposes
 //   - error: An ERROR if the token cannot be parsed or is invalid; nil otherwise.
-func VerifyToken(tokenString, secretKey string) error {
+func VerifyToken(tokenString, secretKey string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secretKey), nil
 	})
 
 	if err != nil {
-		return fmt.Errorf("failed to parse token: %s", err.Error())
+		return nil, fmt.Errorf("failed to parse token: %s", err.Error())
 	}
 
 	if !token.Valid {
-		return fmt.Errorf("invalid token")
+		return nil, fmt.Errorf("invalid token")
 	}
 
-	return nil
+	return token, nil
+}
+
+// ExtractUserIdFromTokenClaim extracts the user ID from the claims in a JWT token.
+// It assumes the token uses the `jwt.MapClaims` format and that the user ID is stored
+// under the key `"userId"`.
+//
+// Parameters:
+//   - token (*jwt.Token): The JWT token containing the claims.
+//
+// Returns:
+//   - string: The extracted user ID if found.
+//   - error: An error if the claims are invalid or if the user ID is not present.
+//
+// Usage Example:
+//
+//	token, err := auth.VerifyToken(tokenString, secretKey)
+//	if err != nil {
+//	    log.Fatalf("Failed to parse token: %v", err)
+//	}
+//
+//	userID, err := ExtractUserIdFromTokenClaim(token)
+//	if err != nil {
+//	    log.Printf("Failed to extract user ID: %v", err)
+//	} else {
+//	    log.Printf("Extracted user ID: %s", userID)
+//	}
+//
+// Errors:
+//   - Returns an error if the claims cannot be cast to `jwt.MapClaims`.
+//   - Returns an error if the `"userId"` key is missing or not a string.
+func ExtractUserIdFromTokenClaim(token *jwt.Token) (string, error) {
+	// Extract userID from token claims
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", fmt.Errorf("invalid token claims: failed to extract user ID from token claims")
+	}
+
+	userID, ok := claims["userId"].(string)
+	if !ok {
+		return "", fmt.Errorf("user ID not found in token")
+	}
+	return userID, nil
 }
