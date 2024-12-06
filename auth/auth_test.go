@@ -11,47 +11,86 @@ func TestVerifyToken(t *testing.T) {
 
 }
 
-func TestExtractUserIdFromTokenClaim(t *testing.T) {
+func TestExtractValueFromTokenClaim(t *testing.T) {
 	tests := []struct {
 		name        string
 		token       *jwt.Token
-		expectedID  string
+		valueField  string
+		expectedVal string
 		expectedErr string
 	}{
 		{
-			name: "Valid token with userId",
+			name: "Valid token with specified field",
 			token: &jwt.Token{
 				Claims: jwt.MapClaims{
 					"userId": "12345",
 				},
 			},
-			expectedID:  "12345",
+			valueField:  "userId",
+			expectedVal: "12345",
 			expectedErr: "",
 		},
 		{
-			name: "Missing userId in claims",
+			name: "Valid token with specified field in bigger Claims",
+			token: &jwt.Token{
+				Claims: jwt.MapClaims{
+					"id":    "12345",
+					"email": "test@mail.com",
+					"phone": "",
+				},
+			},
+			valueField:  "id",
+			expectedVal: "12345",
+			expectedErr: "",
+		},
+		{
+			name: "Missing field in claims",
 			token: &jwt.Token{
 				Claims: jwt.MapClaims{},
 			},
-			expectedID:  "",
-			expectedErr: "user ID not found in token",
+			valueField:  "userId",
+			expectedVal: "",
+			expectedErr: "userId not found in token",
 		},
 		{
-			name: "userId is not a string",
+			name: "Field value is not a string",
 			token: &jwt.Token{
 				Claims: jwt.MapClaims{
 					"userId": 12345, // Integer instead of string
 				},
 			},
-			expectedID:  "",
-			expectedErr: "user ID not found in token",
+			valueField:  "userId",
+			expectedVal: "",
+			expectedErr: "userId not found in token",
+		},
+		{
+			name: "Valid token with different field",
+			token: &jwt.Token{
+				Claims: jwt.MapClaims{
+					"role": "admin",
+				},
+			},
+			valueField:  "role",
+			expectedVal: "admin",
+			expectedErr: "",
+		},
+		{
+			name: "Missing different field in claims",
+			token: &jwt.Token{
+				Claims: jwt.MapClaims{
+					"role": "admin",
+				},
+			},
+			valueField:  "userId",
+			expectedVal: "",
+			expectedErr: "userId not found in token",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Act
-			userID, err := ExtractUserIdFromTokenClaim(tt.token)
+			value, err := ExtractValueFromTokenClaim(tt.token, tt.valueField)
 
 			// Assert
 			if tt.expectedErr != "" {
@@ -62,8 +101,8 @@ func TestExtractUserIdFromTokenClaim(t *testing.T) {
 				t.Errorf("unexpected error: %v", err)
 			}
 
-			if userID != tt.expectedID {
-				t.Errorf("expected userID: %q, got: %q", tt.expectedID, userID)
+			if value != tt.expectedVal {
+				t.Errorf("expected value: %q, got: %q", tt.expectedVal, value)
 			}
 		})
 	}

@@ -42,44 +42,46 @@ func VerifyToken(tokenString, secretKey string) (*jwt.Token, error) {
 	return token, nil
 }
 
-// ExtractUserIdFromTokenClaim extracts the user ID from the claims in a JWT token.
-// It assumes the token uses the `jwt.MapClaims` format and that the user ID is stored
-// under the key `"userId"`.
+// ExtractValueFromTokenClaim extracts a specified value from the claims in a JWT token.
+// It assumes the token uses the `jwt.MapClaims` format and that the value is stored
+// under the provided `valueField` key.
 //
 // Parameters:
 //   - token (*jwt.Token): The JWT token containing the claims.
+//   - valueField (string): The key in the token claims whose value needs to be extracted.
 //
 // Returns:
-//   - string: The extracted user ID if found.
-//   - error: An error if the claims are invalid or if the user ID is not present.
+//   - string: The extracted value if found.
+//   - error: An error if the claims are invalid, or if the value is missing or not a string.
 //
 // Usage Example:
 //
-//	token, err := auth.VerifyToken(tokenString, secretKey)
-//	if err != nil {
-//	    log.Fatalf("Failed to parse token: %v", err)
-//	}
+//   token, err := jwt.Parse(tokenString, keyFunc)
+//   if err != nil {
+//       log.Fatalf("Failed to parse token: %v", err)
+//   }
 //
-//	userID, err := ExtractUserIdFromTokenClaim(token)
-//	if err != nil {
-//	    log.Printf("Failed to extract user ID: %v", err)
-//	} else {
-//	    log.Printf("Extracted user ID: %s", userID)
-//	}
+//   userID, err := ExtractValueFromTokenClaim(token, "userId")
+//   if err != nil {
+//       log.Printf("Failed to extract user ID: %v", err)
+//   } else {
+//       log.Printf("Extracted user ID: %s", userID)
+//   }
 //
 // Errors:
 //   - Returns an error if the claims cannot be cast to `jwt.MapClaims`.
-//   - Returns an error if the `"userId"` key is missing or not a string.
-func ExtractUserIdFromTokenClaim(token *jwt.Token) (string, error) {
-	// Extract userID from token claims
+//   - Returns an error if the specified `valueField` is missing or not a string.
+
+func ExtractValueFromTokenClaim(token *jwt.Token, valueField string) (string, error) {
+	// Extract value from given field from token claims
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return "", fmt.Errorf("invalid token claims: failed to extract user ID from token claims")
+		return "", fmt.Errorf("invalid token claims")
 	}
 
-	userID, ok := claims["userId"].(string)
+	value, ok := claims[valueField].(string)
 	if !ok {
-		return "", fmt.Errorf("user ID not found in token")
+		return "", fmt.Errorf("%s not found in token", valueField)
 	}
-	return userID, nil
+	return value, nil
 }
