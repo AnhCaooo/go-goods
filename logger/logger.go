@@ -1,5 +1,5 @@
 // AnhCao 2024
-package log
+package logger
 
 import (
 	"time"
