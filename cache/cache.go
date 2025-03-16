@@ -4,7 +4,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AnhCaooo/go-goods/helpers"
 	"go.uber.org/zap"
 )
 
@@ -41,14 +40,9 @@ func (c *Cache) SetExpiredAfterTimePeriod(key string, value interface{}, duratio
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	now, err := helpers.GetCurrentTimeInUTC()
-	if err != nil {
-		c.logger.Error("failed to get current time", zap.Error(err))
-	}
-	expirationTime := now.Add(duration)
+	expirationTime := time.Now().Add(duration)
 	c.logger.Debug("time information",
-		zap.Time("current-time-in-utc-zone", time.Now().UTC()),
-		zap.Time("expired-time-utc", expirationTime),
+		zap.Time("expired-time", expirationTime),
 	)
 	c.Data[key] = CacheValue{
 		Value:      value,
@@ -61,9 +55,8 @@ func (c *Cache) SetExpiredAfterTimePeriod(key string, value interface{}, duratio
 // It first acquires a lock on the mutex to ensure thread safety, and then it adds the key-value pair to the map along with the expiration time.
 // Finally, it releases the lock.
 func (c *Cache) SetExpiredAtTime(key string, value interface{}, expiredTime time.Time) {
-	c.logger.Debug("set cache to be expired at",
-		zap.Time("expired-time-utc", expiredTime),
-		zap.Time("current-time-in-utc-zone", time.Now().UTC()),
+	c.logger.Debug("set cache to be expired",
+		zap.Time("expired-time", expiredTime),
 	)
 	c.lock.Lock()
 	defer c.lock.Unlock()
@@ -90,15 +83,13 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 	}
 	if time.Now().After(value.Expiration) {
 		c.logger.Debug("cache was expired",
-			zap.Time("expiration-time-in-utc-zone", value.Expiration),
-			zap.Time("current-time-in-utc-zone", time.Now()),
+			zap.Time("expiration-time", value.Expiration),
 		)
 		c.Delete(key)
 		return nil, false
 	}
 	c.logger.Debug("cache living time",
-		zap.Any("expired-time-in-utc-zone", value.Expiration),
-		zap.Time("current-time-in-utc-zone", time.Now().UTC()),
+		zap.Any("expired-time", value.Expiration),
 	)
 	return value.Value, true
 }
