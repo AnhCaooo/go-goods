@@ -7,4 +7,6 @@ Internal library that provides supporting functionalities for Golang projects:
 - logger (customize from [Uber Zap logger](https://github.com/uber-go/zap))
 - standard encode and decode HTTP request and HTTP response
 - standard map `interface{}` to specific struct 
+- prometheus configuration
+- middleware 
 - Will be more... 
