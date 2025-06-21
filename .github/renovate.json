@@ -15,7 +15,6 @@
                 "major"
             ],
             "groupName": "major Go module updates",
-            "rangeStrategy": "bump",
             "postUpdateOptions": [
                 "gomodTidy"
             ]
@@ -29,7 +28,6 @@
                 "patch"
             ],
             "groupName": "minor/patch Go module updates",
-            "rangeStrategy": "bump",
             "postUpdateOptions": [
                 "gomodTidy"
             ]
