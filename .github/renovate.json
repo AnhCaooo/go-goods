@@ -1,0 +1,38 @@
+{
+    "extends": [
+        "config:recommended"
+    ],
+    "schedule": [
+        "before 6am on Sunday"
+    ],
+    "timezone": "Etc/UTC",
+    "packageRules": [
+        {
+            "matchManagers": [
+                "gomod"
+            ],
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "groupName": "major Go module updates",
+            "rangeStrategy": "bump",
+            "postUpdateOptions": [
+                "gomodTidy"
+            ]
+        },
+        {
+            "matchManagers": [
+                "gomod"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "groupName": "minor/patch Go module updates",
+            "rangeStrategy": "bump",
+            "postUpdateOptions": [
+                "gomodTidy"
+            ]
+        }
+    ]
+}
