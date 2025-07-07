@@ -1,6 +1,9 @@
-# go-goods
-Internal library that provides supporting functionalities for Golang projects:
 
+# 1.1.0 
+- Authenticate middleware 
+- Extended version of http.Error to include translation field.
+
+# 1.0.0 
 - cache in-memory
 - encryption & decryption
 - handle access token (JWT)
@@ -9,5 +12,3 @@ Internal library that provides supporting functionalities for Golang projects:
 - standard map `interface{}` to specific struct 
 - prometheus configuration
 - middleware 
-- Extended version of http.Error to include translation field.
-- Will be more... 
