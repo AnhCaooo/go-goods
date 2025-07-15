@@ -1,4 +1,7 @@
 
+# 1.1.1
+- Create Translation Keys enumerations for common http error response 
+ 
 # 1.1.0 
 - Authenticate middleware 
 - Extended version of http.Error to include translation field.
