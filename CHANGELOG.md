@@ -1,3 +1,5 @@
+# 1.1.2
+- Improve how Middleware Auth can read and store UserID and SessionID
 
 # 1.1.1
 - Create Translation Keys enumerations for common http error response 

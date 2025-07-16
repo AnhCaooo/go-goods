@@ -19,26 +19,37 @@ func Authenticate(next http.Handler, byPassPaths []string, jwtSecret string) htt
 
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
-			goodsHTTP.Error(w, http.StatusForbidden, "No Authorization header provided", "error_no_authorization_header")
+			goodsHTTP.Error(w, http.StatusForbidden, "No Authorization header provided", goodsHTTP.UnauthorizedHeader)
 			return
 		}
 
 		tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 		token, err := auth.VerifyToken(tokenString, jwtSecret)
 		if err != nil {
-			goodsHTTP.Error(w, http.StatusUnauthorized, "Failed to verify token", "error_verify_token")
+			goodsHTTP.Error(w, http.StatusUnauthorized, "Failed to verify token", goodsHTTP.VerifyToken)
 			return
 		}
 
 		// due to 'Supabase' authentication, it stores userId via "sub" field
 		userID, err := auth.ExtractValueFromTokenClaim(token, "sub")
 		if err != nil {
-			goodsHTTP.Error(w, http.StatusUnauthorized, "Failed to extract token", "error_extract_token")
+			goodsHTTP.Error(w, http.StatusUnauthorized, "Failed to extract token", goodsHTTP.ExtractToken)
 			return
 		}
 
-		// Add userID to the context
-		ctx := context.WithValue(r.Context(), goodsContext.UserIdKey, userID)
+		sessionID, err := auth.ExtractValueFromTokenClaim(token, "session_id")
+		if err != nil {
+			goodsHTTP.Error(w, http.StatusUnauthorized, "Failed to extract token", goodsHTTP.ExtractToken)
+			return
+		}
+
+		userCtx := goodsContext.UserContext{
+			UserID:    userID,
+			SessionID: sessionID,
+		}
+
+		// Add userCtx to the context
+		ctx := context.WithValue(r.Context(), goodsContext.ContextKey, userCtx)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

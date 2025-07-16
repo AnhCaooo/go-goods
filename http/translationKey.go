@@ -4,7 +4,10 @@ package goodsHTTP
 type TranslationKey string
 
 const (
-	InvalidRequest TranslationKey = "error_invalid_request"
-	Unauthorized   TranslationKey = "error_unauthorized"
-	InternalServer TranslationKey = "error_internal_server"
+	InvalidRequest     TranslationKey = "error_invalid_request"
+	Unauthorized       TranslationKey = "error_unauthorized"
+	UnauthorizedHeader TranslationKey = "error_no_authorization_header"
+	InternalServer     TranslationKey = "error_internal_server"
+	VerifyToken        TranslationKey = "error_verify_token"
+	ExtractToken       TranslationKey = "error_extract_token"
 )
