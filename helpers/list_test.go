@@ -106,3 +106,27 @@ func TestRemoveDuplicate_MixedTypes(t *testing.T) {
 		}
 	}
 }
+
+func TestRemoveDuplicate_SingleEmptyString(t *testing.T) {
+	input := []string{""}
+	expected := []string{} // should skip empty string
+	result := RemoveDuplicate(input)
+	if len(result) != len(expected) {
+		t.Errorf("expected length %d, got %d", len(expected), len(result))
+	}
+	if len(result) > 0 {
+		t.Errorf("expected empty slice, got %v", result)
+	}
+}
+
+func TestRemoveDuplicate_SingleZeroInt(t *testing.T) {
+	input := []int{0}
+	expected := []int{} // should skip zero value
+	result := RemoveDuplicate(input)
+	if len(result) != len(expected) {
+		t.Errorf("expected length %d, got %d", len(expected), len(result))
+	}
+	if len(result) > 0 {
+		t.Errorf("expected empty slice, got %v", result)
+	}
+}
