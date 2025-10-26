@@ -1,3 +1,10 @@
+# 1.2.2
+- Improve removeDuplicate to skip empty item
+
+# 1.2.1 
+- Add func to remove duplicated items from list
+# 1.2.0 
+
 # 1.1.2
 - Improve how Middleware Auth can read and store UserID and SessionID
 
