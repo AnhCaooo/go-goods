@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"strings"
 	"sync"
 	"time"
 
@@ -41,7 +42,8 @@ func (c *Cache) SetExpiredAfterTimePeriod(key string, value interface{}, duratio
 	defer c.lock.Unlock()
 
 	expirationTime := time.Now().Add(duration)
-	c.logger.Debug("time information",
+	c.logger.Debug("[go-goods] set time for cache to expired after period",
+		zap.String("key", key),
 		zap.Time("expired-time", expirationTime),
 	)
 	c.Data[key] = CacheValue{
@@ -55,7 +57,8 @@ func (c *Cache) SetExpiredAfterTimePeriod(key string, value interface{}, duratio
 // It first acquires a lock on the mutex to ensure thread safety, and then it adds the key-value pair to the map along with the expiration time.
 // Finally, it releases the lock.
 func (c *Cache) SetExpiredAtTime(key string, value interface{}, expiredTime time.Time) {
-	c.logger.Debug("set cache to be expired",
+	c.logger.Debug("[go-goods] set cache to be expired",
+		zap.String("key", key),
 		zap.Time("expired-time", expiredTime),
 	)
 	c.lock.Lock()
@@ -78,23 +81,35 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 
 	value, exists := c.Data[key]
 	if !exists {
-		c.logger.Debug("cache key was not found from cache")
+		c.logger.Debug("[go-goods] cache key was not found from cache", zap.String("key", key))
 		return nil, false
 	}
 	if time.Now().After(value.Expiration) {
-		c.logger.Debug("cache was expired",
+		c.logger.Debug("[go-goods] cache was expired",
+			zap.String("key", key),
 			zap.Time("expiration-time", value.Expiration),
 		)
-		c.Delete(key)
+		delete(c.Data, key)
 		return nil, false
 	}
-	c.logger.Debug("cache living time",
-		zap.Any("expired-time", value.Expiration),
-	)
 	return value.Value, true
 }
 
 // Delete cache based on receiving cache key. If key is not valid, then Delete is no-op
 func (c *Cache) Delete(key string) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
 	delete(c.Data, key)
+}
+
+// DeleteAll removes all cache entries that contain the specified key as a substring.
+func (c *Cache) DeleteAll(key string) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	for k := range c.Data {
+		if strings.Contains(k, key) {
+			delete(c.Data, k)
+		}
+	}
 }

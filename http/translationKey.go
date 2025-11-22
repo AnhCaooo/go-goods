@@ -10,4 +10,5 @@ const (
 	InternalServer     TranslationKey = "error_internal_server"
 	VerifyToken        TranslationKey = "error_verify_token"
 	ExtractToken       TranslationKey = "error_extract_token"
+	NotFound           TranslationKey = "error_not_found"
 )
