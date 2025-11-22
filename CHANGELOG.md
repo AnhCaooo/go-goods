@@ -1,3 +1,7 @@
+# 1.2.3 
+- Add new method `DeleteAll` to cache to allow delete all caches that contains given key 
+- Add `NotFound` as new translation key
+
 # 1.2.2
 - Improve removeDuplicate to skip empty item
 
