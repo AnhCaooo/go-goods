@@ -1,13 +1,19 @@
 package helpers
 
 import (
-	"fmt"
+	"sync"
 	"time"
 )
 
 const (
 	DATE_FORMAT    string = "2006-01-02"          // this is just the layout of YYYY-MM-DD
 	UI_DATE_FORMAT string = "2006-01-02 15:04:05" // this is just the layout of YYYY-MM-DD HH:MM:SS
+)
+
+var (
+	helsinkiLocation *time.Location
+	helsinkiOnce     sync.Once
+	helsinkiErr      error
 )
 
 // SetTime returns current date based on application's time with specific hour and minute.
@@ -28,11 +34,10 @@ func SetTime(hour int, minute int) (time.Time, error) {
 // It returns a pointer to the time.Location and an error if the location
 // could not be loaded.
 func LoadHelsinkiLocation() (*time.Location, error) {
-	location, err := time.LoadLocation("Europe/Helsinki")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get current location: %s", err.Error())
-	}
-	return location, nil
+	helsinkiOnce.Do(func() {
+		helsinkiLocation, helsinkiErr = time.LoadLocation("Europe/Helsinki")
+	})
+	return helsinkiLocation, helsinkiErr
 }
 
 // getTodayDate returns date of today in "YYYY-MM-DD" format
