@@ -19,5 +19,8 @@ jobs:
         id: unit-tests-execution
         run: make test
 
+      - name: Run benchmark tests
+        id: benchmark-execution
+        run: make bench
 
 
