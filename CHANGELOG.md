@@ -1,3 +1,6 @@
+# 1.2.4
+- Add benchmark for go-goods package
+
 # 1.2.3 
 - Add new method `DeleteAll` to cache to allow delete all caches that contains given key 
 - Add `NotFound` as new translation key
