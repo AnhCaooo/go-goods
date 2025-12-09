@@ -1,3 +1,6 @@
+# 1.2.5
+- Provide `testcontainer` to improve unit test reliability and `MongoDB` as first supported image
+
 # 1.2.4
 - Add benchmark for go-goods package
 
