@@ -8,6 +8,7 @@ import (
 const (
 	DATE_FORMAT    string = "2006-01-02"          // this is just the layout of YYYY-MM-DD
 	UI_DATE_FORMAT string = "2006-01-02 15:04:05" // this is just the layout of YYYY-MM-DD HH:MM:SS
+	HOUR_FORMAT    string = "15:04"               // layout of HH:mm
 )
 
 var (
@@ -58,4 +59,22 @@ func GetYesterdayDate() string {
 	today := time.Now()
 	yesterday := today.AddDate(0, 0, -1)
 	return yesterday.Format(DATE_FORMAT)
+}
+
+// ParseHour parse time in string (ex: "15:04") into time and return hour
+func ParseHour(timeStr string) (int, error) {
+	t, err := time.Parse("15:04", timeStr)
+	if err != nil {
+		return 0, err
+	}
+	return t.Hour(), nil
+}
+
+// ParseHourMinute parse time in string (ex: "15:04") into time and return hour and minute
+func ParseHourMinute(timeStr string) (hour int, minute int, err error) {
+	t, err := time.Parse("15:04", timeStr)
+	if err != nil {
+		return 0, 0, err
+	}
+	return t.Hour(), t.Minute(), nil
 }
