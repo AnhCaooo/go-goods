@@ -1,5 +1,5 @@
 # 1.2.6 
-- Provide `parseHour` in `Helper` package
+- Provide `parseHour` & `parseHourMinute` in `Helper` package
 
 # 1.2.5
 - Provide `testcontainer` to improve unit test reliability and `MongoDB` as first supported image

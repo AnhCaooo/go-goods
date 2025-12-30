@@ -69,3 +69,12 @@ func ParseHour(timeStr string) (int, error) {
 	}
 	return t.Hour(), nil
 }
+
+// ParseHourMinute parse time in string (ex: "15:04") into time and return hour and minute
+func ParseHourMinute(timeStr string) (hour int, minute int, err error) {
+	t, err := time.Parse("15:04", timeStr)
+	if err != nil {
+		return 0, 0, err
+	}
+	return t.Hour(), t.Minute(), nil
+}
