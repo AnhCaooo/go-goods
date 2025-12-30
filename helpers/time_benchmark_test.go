@@ -39,3 +39,9 @@ func BenchmarkGetYesterdayDate(b *testing.B) {
 		_ = GetYesterdayDate()
 	}
 }
+
+func BenchmarkParseHour(b *testing.B) {
+	for b.Loop() {
+		_, _ = ParseHour("12:03")
+	}
+}
