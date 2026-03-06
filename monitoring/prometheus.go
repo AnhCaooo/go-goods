@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -28,6 +29,8 @@ var (
 			Help: "Number of active connections to the service",
 		},
 	)
+	NewGoCollector       = collectors.NewGoCollector()
+	ProcessCollectorOpts = collectors.NewProcessCollector(collectors.ProcessCollectorOpts{})
 
 	// LatencyHistogram is a histogram for request durations
 	LatencyHistogram = prometheus.NewHistogramVec(prometheus.HistogramOpts{
@@ -57,6 +60,8 @@ func PrometheusHandler() *http.Handler {
 	registry.MustRegister(Gauge)
 	registry.MustRegister(ActiveRequestsGauge)
 	registry.MustRegister(LatencyHistogram)
+	registry.MustRegister(NewGoCollector)
+	registry.MustRegister(ProcessCollectorOpts)
 
 	handler := promhttp.HandlerFor(
 		registry,
