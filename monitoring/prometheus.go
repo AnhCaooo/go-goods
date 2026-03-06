@@ -10,10 +10,13 @@ import (
 
 var (
 	// HttpRequestCounter is a counter for HTTP requests
-	HttpRequestCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: "http_requests_total",
-		Help: "Total number of HTTP requests received",
-	}, []string{"status", "path", "method"})
+	HttpRequestCounter = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_requests_total",
+			Help: "Total number of HTTP requests received",
+		},
+		[]string{"service", "status", "path", "method"},
+	)
 
 	// Guage is a gauge for monitoring node usage
 	// This is used to track the number of active nodes in the system
