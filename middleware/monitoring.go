@@ -10,29 +10,39 @@ import (
 )
 
 // Prometheus Middleware
-func Prometheus(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		now := time.Now()
-		monitoring.ActiveRequestsGauge.Inc()
-		// Wrap the ResponseWriter to capture the status code
-		recorder := &monitoring.StatusRecorder{
-			ResponseWriter: w,
-			StatusCode:     http.StatusOK,
-		}
+func Prometheus(serviceName string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			now := time.Now()
 
-		// Process the request
-		next.ServeHTTP(recorder, r)
-		monitoring.ActiveRequestsGauge.Dec()
+			monitoring.ActiveRequestsGauge.Inc()
 
-		method := r.Method
-		path := r.URL.Path // Path can be adjusted for aggregation (e.g., `/users/:id` → `/users/{id}`)
-		status := strconv.Itoa(recorder.StatusCode)
+			recorder := &monitoring.StatusRecorder{
+				ResponseWriter: w,
+				StatusCode:     http.StatusOK,
+			}
 
-		monitoring.LatencyHistogram.With(prometheus.Labels{
-			"method": method, "path": path, "status": status,
-		}).Observe(time.Since(now).Seconds())
+			next.ServeHTTP(recorder, r)
 
-		// Increment the counter
-		monitoring.HttpRequestCounter.WithLabelValues(status, path, method).Inc()
-	})
+			monitoring.ActiveRequestsGauge.Dec()
+
+			method := r.Method
+			path := r.URL.Path
+			status := strconv.Itoa(recorder.StatusCode)
+
+			monitoring.LatencyHistogram.With(prometheus.Labels{
+				"service": serviceName,
+				"method":  method,
+				"path":    path,
+				"status":  status,
+			}).Observe(time.Since(now).Seconds())
+
+			monitoring.HttpRequestCounter.With(prometheus.Labels{
+				"service": serviceName,
+				"status":  status,
+				"path":    path,
+				"method":  method,
+			}).Inc()
+		})
+	}
 }
