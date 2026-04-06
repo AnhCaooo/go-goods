@@ -26,6 +26,11 @@ func Prometheus(serviceName string) func(http.Handler) http.Handler {
 
 			monitoring.ActiveRequestsGauge.Dec()
 
+			if r.URL.Path == "/metrics" {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			method := r.Method
 			path := r.URL.Path
 			status := strconv.Itoa(recorder.StatusCode)
