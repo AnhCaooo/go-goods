@@ -1,3 +1,11 @@
+
+# 1.2.8 
+- Skip monitor if the request is `/metrics`
+- Fix the missing registry label 
+
+# 1.2.7
+- Add `serviceName` to Prometheus 
+
 # 1.2.6 
 - Provide `parseHour` & `parseHourMinute` in `Helper` package
 
