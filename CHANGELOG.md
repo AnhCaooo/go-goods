@@ -1,3 +1,5 @@
+# 1.2.9 
+- Fix typo while NewHistogramVec defined
 
 # 1.2.8 
 - Skip monitor if the request is `/metrics`
