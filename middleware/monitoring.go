@@ -13,9 +13,14 @@ import (
 func Prometheus(serviceName string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			now := time.Now()
+			if r.URL.Path == "/metrics" {
+				next.ServeHTTP(w, r)
+				return
+			}
 
+			now := time.Now()
 			monitoring.ActiveRequestsGauge.Inc()
+			defer monitoring.ActiveRequestsGauge.Dec()
 
 			recorder := &monitoring.StatusRecorder{
 				ResponseWriter: w,
@@ -23,13 +28,6 @@ func Prometheus(serviceName string) func(http.Handler) http.Handler {
 			}
 
 			next.ServeHTTP(recorder, r)
-
-			monitoring.ActiveRequestsGauge.Dec()
-
-			if r.URL.Path == "/metrics" {
-				next.ServeHTTP(w, r)
-				return
-			}
 
 			method := r.Method
 			path := r.URL.Path
