@@ -40,7 +40,7 @@ var (
 		Name:    "http_request_duration_seconds",
 		Help:    "Duration of HTTP requests",
 		Buckets: []float64{0.1, 0.5, 1, 2.5, 5, 10},
-	}, []string{"status", "path", "method"})
+	}, []string{"service, status", "path", "method"})
 )
 
 // Helper to capture HTTP status codes
